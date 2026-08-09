@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Local Data</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    min-height:100vh;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background:
+        radial-gradient(circle at top,#202735 0%,#11151c 45%,#0b0e13 100%);
+
+    color:#f1f5f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+/* ===== CARD ===== */
+
+.container{
+    width:100%;
+    max-width:430px;
+}
+
+.card{
+    background:rgba(22,27,35,.92);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:24px;
+    padding:25px;
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.03);
+
+    backdrop-filter:blur(15px);
+}
+
+/* ===== HEADER ===== */
+
+.header{
+    margin-bottom:25px;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+
+    padding:7px 11px;
+    border-radius:999px;
+
+    background:rgba(82,211,133,.09);
+    color:#65dc91;
+
+    font-size:12px;
+    font-weight:600;
+
+    margin-bottom:15px;
+}
+
+.dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#65dc91;
+    box-shadow:0 0 10px #65dc91;
+}
+
+h1{
+    font-size:28px;
+    letter-spacing:-.7px;
+    margin-bottom:7px;
+}
+
+.subtitle{
+    color:#8993a3;
+    font-size:14px;
+    line-height:1.5;
+}
+
+/* ===== FORM ===== */
+
+.field{
+    margin-bottom:18px;
+}
+
+label{
+    display:block;
+    color:#b9c2d0;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:8px;
+}
+
+input,
+textarea{
+    width:100%;
+
+    background:#0e1218;
+    color:#f5f7fa;
+
+    border:1px solid #2b323d;
+    border-radius:13px;
+
+    padding:14px;
+
+    outline:none;
+    font-size:15px;
+
+    transition:
+        border .2s,
+        box-shadow .2s,
+        background .2s;
+}
+
+input::placeholder,
+textarea::placeholder{
+    color:#596372;
+}
+
+input:focus,
+textarea:focus{
+    border-color:#718cff;
+    background:#10151d;
+
+    box-shadow:
+        0 0 0 3px rgba(113,140,255,.12);
+}
+
+textarea{
+    min-height:140px;
+    resize:vertical;
+    line-height:1.5;
+}
+
+/* ===== BUTTON ===== */
+
+button{
+    width:100%;
+    border:0;
+    border-radius:13px;
+
+    padding:14px;
+
+    background:linear-gradient(
+        135deg,
+        #718cff,
+        #586fe5
+    );
+
+    color:white;
+
+    font-size:15px;
+    font-weight:700;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 8px 20px rgba(88,111,229,.25);
+
+    transition:
+        transform .15s,
+        filter .15s,
+        box-shadow .15s;
+}
+
+button:hover{
+    filter:brightness(1.08);
+    box-shadow:
+        0 10px 25px rgba(88,111,229,.35);
+}
+
+button:active{
+    transform:scale(.98);
+}
+
+/* ===== STATUS ===== */
+
+.status{
+    margin-top:17px;
+
+    min-height:42px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    padding:10px;
+
+    border-radius:11px;
+
+    background:#10141b;
+    border:1px solid #252c36;
+
+    color:#7f8998;
+
+    font-size:12px;
+}
+
+/* ===== FOOTER ===== */
+
+.footer{
+    margin-top:18px;
+
+    text-align:center;
+
+    color:#555f6d;
+
+    font-size:11px;
+}
+
+/* ===== MOBILE ===== */
+
+@media(max-width:480px){
+
+    body{
+        padding:14px;
+    }
+
+    .card{
+        padding:21px;
+        border-radius:21px;
+    }
+
+    h1{
+        font-size:25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="header">
+
+            <div class="badge">
+                <span class="dot"></span>
+                LOCAL SERVER
+            </div>
+
+            <h1>Simpan Data</h1>
+
+            <p class="subtitle">
+                Kirim teks langsung ke server lokal Termux.
+            </p>
+
+        </div>
+
+        <form id="form">
+
+            <div class="field">
+
+                <label for="nama">
+                    Nama file
+                </label>
+
+                <input
+                    id="nama"
+                    type="text"
+                    placeholder="Contoh: Haidar"
+                    autocomplete="off"
+                    required
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label for="pesan">
+                    Isi pesan
+                </label>
+
+                <textarea
+                    id="pesan"
+                    placeholder="Tulis sesuatu..."
+                    required
+                ></textarea>
+
+            </div>
+
+            <button type="submit">
+                Simpan ke Termux
+            </button>
+
+        </form>
+
+        <div class="status" id="status">
+            Siap menerima data.
+        </div>
+
+        <div class="footer">
+            Data akan disimpan sebagai nama.txt
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const form = document.getElementById("form");
+const statusBox = document.getElementById("status");
+
+/*
+    SERVER TERMUX
+    Untuk sementara localhost.
+*/
+
+const SERVER = "http://127.0.0.1:8000";
+
+
+form.addEventListener("submit", async function(event){
+
+    event.preventDefault();
+
+    const nama =
+        document.getElementById("nama").value.trim();
+
+    const pesan =
+        document.getElementById("pesan").value.trim();
+
+    if(!nama || !pesan){
+        statusBox.textContent =
+            "Nama dan pesan harus diisi.";
+
+        return;
+    }
+
+    statusBox.textContent =
+        "Mengirim data...";
+
+    try{
+
+        const response = await fetch(
+            SERVER + "/simpan",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:JSON.stringify({
+                    nama:nama,
+                    pesan:pesan
+                })
+            }
+        );
+
+        const hasil =
+            await response.json();
+
+        if(hasil.status === "ok"){
+
+            statusBox.textContent =
+                "✓ Berhasil: " + hasil.file;
+
+            form.reset();
+
+        }else{
+
+            statusBox.textContent =
+                "✕ Gagal menyimpan.";
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        statusBox.textContent =
+            "✕ Tidak bisa terhubung ke server Termux.";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

@@ -3,406 +3,927 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Local Data</title>
-
+<title>⚡ UploadZone</title>
 <style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Space+Grotesk:wght@400;600;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --neon:#00f0ff;
+  --neon2:#a855f7;
+  --neon3:#f43f5e;
+  --glass:rgba(255,255,255,.06);
+  --glass-border:rgba(255,255,255,.12);
 }
 
 body{
-    min-height:100vh;
-    font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Arial,
-        sans-serif;
-
-    background:
-        radial-gradient(circle at top,#202735 0%,#11151c 45%,#0b0e13 100%);
-
-    color:#f1f5f9;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
+  font-family:'Inter',sans-serif;
+  background:#050510;
+  color:#fff;
+  min-height:100vh;
+  overflow-x:hidden;
 }
 
-/* ===== CARD ===== */
+/* ===== AURORA BACKGROUND ===== */
+.aurora{
+  position:fixed;inset:0;z-index:0;overflow:hidden;
+}
+.aurora span{
+  position:absolute;
+  width:600px;height:600px;
+  border-radius:50%;
+  filter:blur(120px);
+  opacity:.35;
+  animation:auroraMove 12s ease-in-out infinite alternate;
+}
+.aurora span:nth-child(1){background:#6366f1;top:-10%;left:-5%;animation-delay:0s}
+.aurora span:nth-child(2){background:#06b6d4;bottom:-15%;right:-5%;animation-delay:-4s}
+.aurora span:nth-child(3){background:#a855f7;top:40%;left:50%;animation-delay:-8s;width:500px;height:500px}
+.aurora span:nth-child(4){background:#f43f5e;top:10%;right:20%;animation-delay:-2s;width:350px;height:350px;opacity:.2}
 
-.container{
-    width:100%;
-    max-width:430px;
+@keyframes auroraMove{
+  0%{transform:translate(0,0) scale(1) rotate(0deg)}
+  33%{transform:translate(80px,-60px) scale(1.2) rotate(30deg)}
+  66%{transform:translate(-50px,80px) scale(.9) rotate(-20deg)}
+  100%{transform:translate(40px,40px) scale(1.1) rotate(10deg)}
 }
 
-.card{
-    background:rgba(22,27,35,.92);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:24px;
-    padding:25px;
+/* ===== PARTICLES ===== */
+#particles{position:fixed;inset:0;z-index:1;pointer-events:none}
 
-    box-shadow:
-        0 25px 60px rgba(0,0,0,.45),
-        inset 0 1px 0 rgba(255,255,255,.03);
-
-    backdrop-filter:blur(15px);
+/* ===== GRID OVERLAY ===== */
+.grid-overlay{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+  background-size:60px 60px;
 }
+
+/* ===== PASSWORD GATE ===== */
+#gate{
+  position:fixed;inset:0;z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(5,5,16,.85);
+  backdrop-filter:blur(30px);
+  transition:opacity .6s,transform .6s;
+}
+#gate.hidden{opacity:0;transform:scale(1.1);pointer-events:none}
+
+.gate-card{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:24px;
+  padding:48px 40px;
+  width:min(420px,90vw);
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  animation:gateIn .8s cubic-bezier(.16,1,.3,1);
+}
+@keyframes gateIn{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:none}}
+
+.gate-card::before{
+  content:'';position:absolute;top:-2px;left:-2px;right:-2px;bottom:-2px;
+  background:linear-gradient(45deg,var(--neon),var(--neon2),var(--neon3),var(--neon));
+  background-size:400% 400%;
+  border-radius:25px;z-index:-1;
+  animation:borderGlow 4s linear infinite;
+  opacity:.6;
+}
+.gate-card::after{
+  content:'';position:absolute;inset:2px;
+  background:rgba(10,10,30,.95);
+  border-radius:22px;z-index:-1;
+}
+@keyframes borderGlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+.gate-icon{
+  width:80px;height:80px;margin:0 auto 24px;
+  background:linear-gradient(135deg,var(--neon),var(--neon2));
+  border-radius:20px;display:flex;align-items:center;justify-content:center;
+  font-size:36px;
+  animation:iconFloat 3s ease-in-out infinite;
+  box-shadow:0 0 40px rgba(0,240,255,.3);
+}
+@keyframes iconFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+
+.gate-card h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:28px;font-weight:700;
+  margin-bottom:8px;
+  background:linear-gradient(135deg,#fff,var(--neon));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.gate-card p{color:rgba(255,255,255,.5);font-size:14px;margin-bottom:28px}
+
+.gate-input-wrap{position:relative;margin-bottom:20px}
+.gate-input-wrap input{
+  width:100%;padding:16px 50px 16px 20px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;color:#fff;font-size:16px;
+  outline:none;transition:all .3s;
+  font-family:'Inter',sans-serif;
+}
+.gate-input-wrap input:focus{
+  border-color:var(--neon);
+  box-shadow:0 0 20px rgba(0,240,255,.15);
+}
+.gate-input-wrap .toggle-eye{
+  position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  cursor:pointer;font-size:18px;opacity:.5;transition:opacity .3s;
+  background:none;border:none;color:#fff;
+}
+.gate-input-wrap .toggle-eye:hover{opacity:1}
+
+.gate-btn{
+  width:100%;padding:16px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,var(--neon),var(--neon2));
+  color:#fff;font-size:16px;font-weight:700;
+  cursor:pointer;position:relative;overflow:hidden;
+  font-family:'Space Grotesk',sans-serif;
+  transition:transform .2s,box-shadow .3s;
+}
+.gate-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,240,255,.3)}
+.gate-btn:active{transform:scale(.97)}
+.gate-btn .btn-shine{
+  position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+  animation:btnShine 3s infinite;
+}
+@keyframes btnShine{0%{left:-100%}50%,100%{left:100%}}
+
+.gate-error{
+  color:var(--neon3);font-size:13px;margin-top:12px;
+  opacity:0;transition:opacity .3s;
+}
+.gate-error.show{opacity:1}
+
+/* ===== MAIN CONTENT ===== */
+#main{
+  position:relative;z-index:10;
+  max-width:900px;margin:0 auto;
+  padding:40px 20px 80px;
+  opacity:0;transform:translateY(30px);
+  transition:all .8s cubic-bezier(.16,1,.3,1);
+}
+#main.visible{opacity:1;transform:none}
 
 /* ===== HEADER ===== */
+.header{text-align:center;margin-bottom:50px;position:relative}
+.header h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(36px,6vw,56px);font-weight:900;
+  background:linear-gradient(135deg,#fff 0%,var(--neon) 40%,var(--neon2) 70%,var(--neon3) 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:textShimmer 4s linear infinite;
+  line-height:1.1;
+}
+@keyframes textShimmer{0%{background-position:0% center}100%{background-position:200% center}}
 
-.header{
-    margin-bottom:25px;
+.header .subtitle{
+  color:rgba(255,255,255,.4);font-size:15px;margin-top:12px;
+  letter-spacing:3px;text-transform:uppercase;
+}
+.header .line{
+  width:80px;height:3px;margin:20px auto 0;
+  background:linear-gradient(90deg,var(--neon),var(--neon2));
+  border-radius:2px;
+  animation:linePulse 2s ease-in-out infinite;
+}
+@keyframes linePulse{0%,100%{opacity:1;transform:scaleX(1)}50%{opacity:.5;transform:scaleX(.7)}}
+
+/* ===== STATUS BAR ===== */
+.status-bar{
+  display:flex;align-items:center;gap:10px;
+  justify-content:center;margin-bottom:40px;
+  padding:12px 24px;
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:50px;
+  width:fit-content;margin-left:auto;margin-right:auto;
+  font-size:13px;color:rgba(255,255,255,.6);
+}
+.status-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#22c55e;
+  animation:dotPulse 2s infinite;
+}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}
+
+/* ===== CARDS ===== */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-bottom:40px}
+
+.card{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:24px;
+  padding:32px 28px;
+  position:relative;overflow:hidden;
+  transition:all .4s cubic-bezier(.16,1,.3,1);
+  cursor:default;
+}
+.card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(255,255,255,.2);
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.06) 0%,transparent 60%);
+  opacity:0;transition:opacity .3s;
+  pointer-events:none;
+}
+.card:hover::before{opacity:1}
+
+.card-icon{
+  width:60px;height:60px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;margin-bottom:20px;
+  position:relative;
+}
+.card-icon.file{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
+.card-icon.image{background:linear-gradient(135deg,#06b6d4,#22d3ee)}
+.card-icon.camera{background:linear-gradient(135deg,#f43f5e,#fb7185)}
+
+.card-icon::after{
+  content:'';position:absolute;inset:-3px;
+  border-radius:18px;
+  background:inherit;filter:blur(12px);opacity:.4;z-index:-1;
 }
 
-.badge{
-    display:inline-flex;
-    align-items:center;
-    gap:7px;
+.card h3{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:20px;font-weight:700;margin-bottom:8px;
+}
+.card p{color:rgba(255,255,255,.4);font-size:13px;line-height:1.6;margin-bottom:20px}
 
-    padding:7px 11px;
-    border-radius:999px;
+/* ===== DROP ZONE ===== */
+.dropzone{
+  border:2px dashed rgba(255,255,255,.15);
+  border-radius:16px;
+  padding:28px 16px;
+  text-align:center;
+  transition:all .3s;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+}
+.dropzone:hover,.dropzone.dragover{
+  border-color:var(--neon);
+  background:rgba(0,240,255,.04);
+}
+.dropzone.dragover{
+  animation:dropPulse 1s infinite;
+}
+@keyframes dropPulse{0%,100%{box-shadow:inset 0 0 20px rgba(0,240,255,.05)}50%{box-shadow:inset 0 0 40px rgba(0,240,255,.1)}}
 
-    background:rgba(82,211,133,.09);
-    color:#65dc91;
+.dropzone .dz-icon{font-size:32px;margin-bottom:10px;display:block}
+.dropzone .dz-text{font-size:13px;color:rgba(255,255,255,.5)}
+.dropzone .dz-text strong{color:var(--neon)}
+.dropzone input[type="file"]{display:none}
 
-    font-size:12px;
-    font-weight:600;
+/* ===== CAMERA SECTION ===== */
+.camera-area{
+  border-radius:16px;overflow:hidden;
+  position:relative;
+  background:rgba(0,0,0,.3);
+  min-height:200px;
+  display:flex;align-items:center;justify-content:center;
+}
+.camera-area video{
+  width:100%;border-radius:16px;
+  display:none;
+}
+.camera-area .cam-placeholder{
+  text-align:center;color:rgba(255,255,255,.3);
+}
+.camera-area .cam-placeholder span{font-size:40px;display:block;margin-bottom:8px}
 
-    margin-bottom:15px;
+.camera-controls{
+  display:flex;gap:10px;margin-top:14px;
+}
+.cam-btn{
+  flex:1;padding:12px;border:none;border-radius:12px;
+  font-size:13px;font-weight:600;cursor:pointer;
+  transition:all .3s;font-family:'Inter',sans-serif;
+}
+.cam-btn.start{background:linear-gradient(135deg,#f43f5e,#fb7185);color:#fff}
+.cam-btn.capture{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;display:none}
+.cam-btn.stop{background:rgba(255,255,255,.1);color:#fff;display:none}
+.cam-btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+
+/* ===== UPLOAD BUTTON ===== */
+.upload-btn{
+  width:100%;padding:14px;margin-top:16px;
+  border:none;border-radius:14px;
+  background:linear-gradient(135deg,var(--neon),var(--neon2));
+  color:#fff;font-size:14px;font-weight:700;
+  cursor:pointer;position:relative;overflow:hidden;
+  font-family:'Space Grotesk',sans-serif;
+  transition:all .3s;
+  letter-spacing:.5px;
+}
+.upload-btn:hover{box-shadow:0 8px 30px rgba(0,240,255,.25);transform:translateY(-2px)}
+.upload-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ===== FILE LIST ===== */
+.file-list{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.file-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;
+  background:rgba(255,255,255,.04);
+  border-radius:10px;
+  font-size:12px;
+  animation:fileIn .4s cubic-bezier(.16,1,.3,1);
+}
+@keyframes fileIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+.file-item .fi-icon{font-size:18px}
+.file-item .fi-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,.7)}
+.file-item .fi-size{color:rgba(255,255,255,.3);font-size:11px}
+.file-item .fi-remove{
+  background:none;border:none;color:var(--neon3);
+  cursor:pointer;font-size:16px;opacity:.6;transition:opacity .3s;
+}
+.file-item .fi-remove:hover{opacity:1}
+
+/* ===== PROGRESS ===== */
+.progress-wrap{
+  margin-top:12px;display:none;
+}
+.progress-bar-bg{
+  height:6px;background:rgba(255,255,255,.08);
+  border-radius:3px;overflow:hidden;
+}
+.progress-bar-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--neon),var(--neon2));
+  border-radius:3px;
+  transition:width .3s;
+}
+.progress-text{
+  font-size:11px;color:rgba(255,255,255,.4);
+  margin-top:6px;text-align:center;
 }
 
-.dot{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    background:#65dc91;
-    box-shadow:0 0 10px #65dc91;
+/* ===== TOAST ===== */
+.toast-container{
+  position:fixed;top:24px;right:24px;z-index:2000;
+  display:flex;flex-direction:column;gap:10px;
 }
-
-h1{
-    font-size:28px;
-    letter-spacing:-.7px;
-    margin-bottom:7px;
+.toast{
+  padding:14px 22px;
+  background:rgba(20,20,40,.9);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);
+  border-radius:14px;
+  font-size:13px;
+  display:flex;align-items:center;gap:10px;
+  animation:toastIn .5s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 10px 40px rgba(0,0,0,.3);
 }
+.toast.success{border-left:3px solid #22c55e}
+.toast.error{border-left:3px solid var(--neon3)}
+.toast.info{border-left:3px solid var(--neon)}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+@keyframes toastOut{from{opacity:1;transform:none}to{opacity:0;transform:translateX(40px)}}
 
-.subtitle{
-    color:#8993a3;
-    font-size:14px;
-    line-height:1.5;
+/* ===== CANVAS PREVIEW ===== */
+.preview-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));
+  gap:8px;margin-top:14px;
 }
-
-/* ===== FORM ===== */
-
-.field{
-    margin-bottom:18px;
+.preview-thumb{
+  aspect-ratio:1;border-radius:10px;overflow:hidden;
+  position:relative;
+  animation:thumbIn .4s cubic-bezier(.16,1,.3,1);
 }
-
-label{
-    display:block;
-    color:#b9c2d0;
-    font-size:13px;
-    font-weight:600;
-    margin-bottom:8px;
+@keyframes thumbIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
+.preview-thumb img{width:100%;height:100%;object-fit:cover}
+.preview-thumb .thumb-remove{
+  position:absolute;top:4px;right:4px;
+  width:20px;height:20px;border-radius:50%;
+  background:rgba(0,0,0,.6);border:none;color:#fff;
+  font-size:11px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .3s;
 }
-
-input,
-textarea{
-    width:100%;
-
-    background:#0e1218;
-    color:#f5f7fa;
-
-    border:1px solid #2b323d;
-    border-radius:13px;
-
-    padding:14px;
-
-    outline:none;
-    font-size:15px;
-
-    transition:
-        border .2s,
-        box-shadow .2s,
-        background .2s;
-}
-
-input::placeholder,
-textarea::placeholder{
-    color:#596372;
-}
-
-input:focus,
-textarea:focus{
-    border-color:#718cff;
-    background:#10151d;
-
-    box-shadow:
-        0 0 0 3px rgba(113,140,255,.12);
-}
-
-textarea{
-    min-height:140px;
-    resize:vertical;
-    line-height:1.5;
-}
-
-/* ===== BUTTON ===== */
-
-button{
-    width:100%;
-    border:0;
-    border-radius:13px;
-
-    padding:14px;
-
-    background:linear-gradient(
-        135deg,
-        #718cff,
-        #586fe5
-    );
-
-    color:white;
-
-    font-size:15px;
-    font-weight:700;
-
-    cursor:pointer;
-
-    box-shadow:
-        0 8px 20px rgba(88,111,229,.25);
-
-    transition:
-        transform .15s,
-        filter .15s,
-        box-shadow .15s;
-}
-
-button:hover{
-    filter:brightness(1.08);
-    box-shadow:
-        0 10px 25px rgba(88,111,229,.35);
-}
-
-button:active{
-    transform:scale(.98);
-}
-
-/* ===== STATUS ===== */
-
-.status{
-    margin-top:17px;
-
-    min-height:42px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    text-align:center;
-
-    padding:10px;
-
-    border-radius:11px;
-
-    background:#10141b;
-    border:1px solid #252c36;
-
-    color:#7f8998;
-
-    font-size:12px;
-}
+.preview-thumb:hover .thumb-remove{opacity:1}
 
 /* ===== FOOTER ===== */
-
 .footer{
-    margin-top:18px;
+  text-align:center;margin-top:60px;
+  color:rgba(255,255,255,.2);font-size:12px;
+}
+.footer a{color:var(--neon);text-decoration:none}
 
-    text-align:center;
-
-    color:#555f6d;
-
-    font-size:11px;
+/* ===== FLOATING SHAPES ===== */
+.floating-shapes{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.floating-shapes .shape{
+  position:absolute;
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:50%;
+  animation:shapeFloat 20s linear infinite;
+}
+@keyframes shapeFloat{
+  0%{transform:translateY(100vh) rotate(0deg);opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translateY(-100px) rotate(360deg);opacity:0}
 }
 
-/* ===== MOBILE ===== */
-
-@media(max-width:480px){
-
-    body{
-        padding:14px;
-    }
-
-    .card{
-        padding:21px;
-        border-radius:21px;
-    }
-
-    h1{
-        font-size:25px;
-    }
+/* ===== RESPONSIVE ===== */
+@media(max-width:600px){
+  .cards{grid-template-columns:1fr}
+  .gate-card{padding:36px 24px}
+  .header h1{font-size:32px}
 }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.2)}
+
+/* ===== LOADING SPINNER ===== */
+.spinner{
+  width:20px;height:20px;border:2px solid rgba(255,255,255,.2);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin .6s linear infinite;
+  display:inline-block;vertical-align:middle;margin-right:8px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== CAPTURE FLASH ===== */
+.flash{
+  position:fixed;inset:0;background:#fff;z-index:9999;
+  opacity:0;pointer-events:none;
+  transition:opacity .1s;
+}
+.flash.active{opacity:.8}
 </style>
 </head>
-
 <body>
 
-<div class="container">
+<!-- AURORA BG -->
+<div class="aurora">
+  <span></span><span></span><span></span><span></span>
+</div>
+<div class="grid-overlay"></div>
+<div class="floating-shapes" id="shapes"></div>
+<canvas id="particles"></canvas>
+<div class="flash" id="flash"></div>
 
-    <div class="card">
-
-        <div class="header">
-
-            <div class="badge">
-                <span class="dot"></span>
-                LOCAL SERVER
-            </div>
-
-            <h1>Simpan Data</h1>
-
-            <p class="subtitle">
-                Kirim teks langsung ke server lokal Termux.
-            </p>
-
-        </div>
-
-        <form id="form">
-
-            <div class="field">
-
-                <label for="nama">
-                    Nama file
-                </label>
-
-                <input
-                    id="nama"
-                    type="text"
-                    placeholder="Contoh: Haidar"
-                    autocomplete="off"
-                    required
-                >
-
-            </div>
-
-            <div class="field">
-
-                <label for="pesan">
-                    Isi pesan
-                </label>
-
-                <textarea
-                    id="pesan"
-                    placeholder="Tulis sesuatu..."
-                    required
-                ></textarea>
-
-            </div>
-
-            <button type="submit">
-                Simpan ke Termux
-            </button>
-
-        </form>
-
-        <div class="status" id="status">
-            Siap menerima data.
-        </div>
-
-        <div class="footer">
-            Data akan disimpan sebagai nama.txt
-        </div>
-
+<!-- ===== PASSWORD GATE ===== -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-icon">🔐</div>
+    <h1>UploadZone</h1>
+    <p>Masukkan sandi untuk melanjutkan</p>
+    <div class="gate-input-wrap">
+      <input type="password" id="passInput" placeholder="Ketik sandi..." autocomplete="off">
+      <button class="toggle-eye" id="toggleEye" type="button">👁</button>
     </div>
-
+    <button class="gate-btn" id="gateBtn" type="button">
+      <span class="btn-shine"></span>
+      Masuk 🚀
+    </button>
+    <div class="gate-error" id="gateError">❌ Sandi salah, coba lagi!</div>
+  </div>
 </div>
 
+<!-- ===== MAIN ===== -->
+<div id="main">
+  <div class="header">
+    <h1>⚡ UploadZone</h1>
+    <div class="subtitle">Secure • Fast • Beautiful</div>
+    <div class="line"></div>
+  </div>
+
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    <span>Sistem aktif &nbsp;•&nbsp; Endpoint: <strong id="urlDisplay" style="color:var(--neon)">Belum diatur</strong></span>
+  </div>
+
+  <div class="cards">
+
+    <!-- FILE UPLOAD -->
+    <div class="card" data-tilt>
+      <div class="card-icon file">📁</div>
+      <h3>Upload File</h3>
+      <p>Drag & drop atau klik untuk pilih file. Support semua format.</p>
+      <div class="dropzone" id="fileDrop">
+        <span class="dz-icon">📤</span>
+        <div class="dz-text">Seret file ke sini atau <strong>klik untuk browse</strong></div>
+        <input type="file" id="fileInput" multiple>
+      </div>
+      <div class="file-list" id="fileList"></div>
+      <div class="progress-wrap" id="fileProgress">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="fileProgressFill"></div></div>
+        <div class="progress-text" id="fileProgressText">0%</div>
+      </div>
+      <button class="upload-btn" id="fileUploadBtn" disabled>🚀 Upload File</button>
+    </div>
+
+    <!-- IMAGE UPLOAD -->
+    <div class="card" data-tilt>
+      <div class="card-icon image">🖼️</div>
+      <h3>Upload Gambar</h3>
+      <p>Khusus gambar. Preview otomatis sebelum upload.</p>
+      <div class="dropzone" id="imgDrop">
+        <span class="dz-icon">📷</span>
+        <div class="dz-text">Seret gambar atau <strong>klik untuk pilih</strong></div>
+        <input type="file" id="imgInput" multiple accept="image/*">
+      </div>
+      <div class="preview-grid" id="imgPreview"></div>
+      <div class="file-list" id="imgList"></div>
+      <div class="progress-wrap" id="imgProgress">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="imgProgressFill"></div></div>
+        <div class="progress-text" id="imgProgressText">0%</div>
+      </div>
+      <button class="upload-btn" id="imgUploadBtn" disabled>🚀 Upload Gambar</button>
+    </div>
+
+    <!-- CAMERA -->
+    <div class="card" data-tilt>
+      <div class="card-icon camera">📸</div>
+      <h3>Buka Kamera</h3>
+      <p>Ambil foto langsung dari kamera device kamu.</p>
+      <div class="camera-area" id="cameraArea">
+        <video id="camVideo" autoplay playsinline></video>
+        <div class="cam-placeholder" id="camPlaceholder">
+          <span>📷</span>
+          <div style="font-size:13px">Klik tombol di bawah untuk mulai</div>
+        </div>
+      </div>
+      <canvas id="camCanvas" style="display:none"></canvas>
+      <div class="camera-controls">
+        <button class="cam-btn start" id="camStart">▶ Mulai Kamera</button>
+        <button class="cam-btn capture" id="camCapture">📸 Jepret!</button>
+        <button class="cam-btn stop" id="camStop">⏹ Stop</button>
+      </div>
+      <div class="preview-grid" id="camPreview"></div>
+      <div class="progress-wrap" id="camProgress">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="camProgressFill"></div></div>
+        <div class="progress-text" id="camProgressText">0%</div>
+      </div>
+      <button class="upload-btn" id="camUploadBtn" disabled>🚀 Upload Foto Kamera</button>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Dibuat dengan 💜 &nbsp;•&nbsp; <a href="#">UploadZone</a> &copy; 2026
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
 
 <script>
+// ============================================
+//  KONFIGURASI — ISI URL & SANDI DI SINI
+// ============================================
+const CONFIG = {
+  uploadURL: "",          // <-- ISI URL UPLOAD DARI GEMINI
+  password: "",           // <-- ISI SANDI (kosong = tanpa sandi)
+};
 
-const form = document.getElementById("form");
-const statusBox = document.getElementById("status");
+// ============================================
+//  PARTICLES
+// ============================================
+const cvs = document.getElementById('particles');
+const ctx = cvs.getContext('2d');
+let W, H, dots = [];
+function resizeCvs(){ W = cvs.width = innerWidth; H = cvs.height = innerHeight; }
+resizeCvs(); addEventListener('resize', resizeCvs);
+for(let i=0;i<60;i++){
+  dots.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+.5,
+    dx:(Math.random()-.5)*.4,dy:(Math.random()-.5)*.4,o:Math.random()*.4+.1});
+}
+function drawParticles(){
+  ctx.clearRect(0,0,W,H);
+  dots.forEach(d=>{
+    d.x+=d.dx; d.y+=d.dy;
+    if(d.x<0)d.x=W; if(d.x>W)d.x=0;
+    if(d.y<0)d.y=H; if(d.y>H)d.y=0;
+    ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${d.o})`;ctx.fill();
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
 
-/*
-    SERVER TERMUX
-    Untuk sementara localhost.
-*/
+// ============================================
+//  FLOATING SHAPES
+// ============================================
+const shapesEl = document.getElementById('shapes');
+for(let i=0;i<8;i++){
+  const s=document.createElement('div');s.className='shape';
+  const size=Math.random()*80+20;
+  s.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;animation-duration:${Math.random()*15+15}s;animation-delay:${Math.random()*10}s;`;
+  shapesEl.appendChild(s);
+}
 
-const SERVER = "http://127.0.0.1:8000";
-
-
-form.addEventListener("submit", async function(event){
-
-    event.preventDefault();
-
-    const nama =
-        document.getElementById("nama").value.trim();
-
-    const pesan =
-        document.getElementById("pesan").value.trim();
-
-    if(!nama || !pesan){
-        statusBox.textContent =
-            "Nama dan pesan harus diisi.";
-
-        return;
-    }
-
-    statusBox.textContent =
-        "Mengirim data...";
-
-    try{
-
-        const response = await fetch(
-            SERVER + "/simpan",
-            {
-                method:"POST",
-
-                headers:{
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body:JSON.stringify({
-                    nama:nama,
-                    pesan:pesan
-                })
-            }
-        );
-
-        const hasil =
-            await response.json();
-
-        if(hasil.status === "ok"){
-
-            statusBox.textContent =
-                "✓ Berhasil: " + hasil.file;
-
-            form.reset();
-
-        }else{
-
-            statusBox.textContent =
-                "✕ Gagal menyimpan.";
-
-        }
-
-    }catch(error){
-
-        console.error(error);
-
-        statusBox.textContent =
-            "✕ Tidak bisa terhubung ke server Termux.";
-
-    }
-
+// ============================================
+//  CARD MOUSE GLOW
+// ============================================
+document.querySelectorAll('.card').forEach(c=>{
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect();
+    c.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+    c.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+  });
 });
 
+// ============================================
+//  TOAST
+// ============================================
+function toast(msg, type='info'){
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  const icons={success:'✅',error:'❌',info:'ℹ️'};
+  t.innerHTML=`<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(()=>{t.style.animation='toastOut .4s forwards';setTimeout(()=>t.remove(),400)},3500);
+}
 
+// ============================================
+//  PASSWORD GATE
+// ============================================
+const gate=document.getElementById('gate');
+const passInput=document.getElementById('passInput');
+const gateBtn=document.getElementById('gateBtn');
+const gateError=document.getElementById('gateError');
+const mainEl=document.getElementById('main');
+
+function tryEnter(){
+  const val=passInput.value.trim();
+  if(CONFIG.password==="" || val===CONFIG.password){
+    gate.classList.add('hidden');
+    mainEl.classList.add('visible');
+    toast('Selamat datang! 🎉','success');
+  } else {
+    gateError.classList.add('show');
+    passInput.style.borderColor='var(--neon3)';
+    setTimeout(()=>{gateError.classList.remove('show');passInput.style.borderColor=''},2000);
+  }
+}
+gateBtn.addEventListener('click',tryEnter);
+passInput.addEventListener('keydown',e=>{if(e.key==='Enter')tryEnter()});
+
+document.getElementById('toggleEye').addEventListener('click',function(){
+  const isP=passInput.type==='password';
+  passInput.type=isP?'text':'password';
+  this.textContent=isP?'🙈':'👁';
+});
+
+// ============================================
+//  FORMAT SIZE
+// ============================================
+function fmtSize(b){
+  if(b<1024)return b+' B';
+  if(b<1048576)return (b/1024).toFixed(1)+' KB';
+  return (b/1048576).toFixed(1)+' MB';
+}
+
+// ============================================
+//  FILE UPLOAD
+// ============================================
+let fileQueue=[];
+const fileDrop=document.getElementById('fileDrop');
+const fileInput=document.getElementById('fileInput');
+const fileList=document.getElementById('fileList');
+const fileUploadBtn=document.getElementById('fileUploadBtn');
+
+fileDrop.addEventListener('click',()=>fileInput.click());
+fileDrop.addEventListener('dragover',e=>{e.preventDefault();fileDrop.classList.add('dragover')});
+fileDrop.addEventListener('dragleave',()=>fileDrop.classList.remove('dragover'));
+fileDrop.addEventListener('drop',e=>{
+  e.preventDefault();fileDrop.classList.remove('dragover');
+  addFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change',()=>{addFiles(fileInput.files);fileInput.value=''});
+
+function addFiles(files){
+  [...files].forEach(f=>fileQueue.push(f));
+  renderFileList();
+}
+function renderFileList(){
+  fileList.innerHTML='';
+  fileQueue.forEach((f,i)=>{
+    fileList.innerHTML+=`<div class="file-item">
+      <span class="fi-icon">📄</span>
+      <span class="fi-name">${f.name}</span>
+      <span class="fi-size">${fmtSize(f.size)}</span>
+      <button class="fi-remove" onclick="removeFile(${i})">✕</button>
+    </div>`;
+  });
+  fileUploadBtn.disabled=fileQueue.length===0;
+}
+function removeFile(i){fileQueue.splice(i,1);renderFileList();}
+
+fileUploadBtn.addEventListener('click',()=>{
+  const fd=new FormData();
+  fileQueue.forEach(f=>fd.append('files',f));
+  doUpload(fd,'file');
+});
+
+// ============================================
+//  IMAGE UPLOAD
+// ============================================
+let imgQueue=[];
+const imgDrop=document.getElementById('imgDrop');
+const imgInput=document.getElementById('imgInput');
+const imgPreview=document.getElementById('imgPreview');
+const imgList=document.getElementById('imgList');
+const imgUploadBtn=document.getElementById('imgUploadBtn');
+
+imgDrop.addEventListener('click',()=>imgInput.click());
+imgDrop.addEventListener('dragover',e=>{e.preventDefault();imgDrop.classList.add('dragover')});
+imgDrop.addEventListener('dragleave',()=>imgDrop.classList.remove('dragover'));
+imgDrop.addEventListener('drop',e=>{
+  e.preventDefault();imgDrop.classList.remove('dragover');
+  addImages(e.dataTransfer.files);
+});
+imgInput.addEventListener('change',()=>{addImages(imgInput.files);imgInput.value=''});
+
+function addImages(files){
+  [...files].forEach(f=>{
+    if(!f.type.startsWith('image/'))return;
+    imgQueue.push(f);
+    const reader=new FileReader();
+    reader.onload=e=>{
+      imgPreview.innerHTML+=`<div class="preview-thumb">
+        <img src="${e.target.result}" alt="">
+        <button class="thumb-remove" onclick="this.parentElement.remove()">✕</button>
+      </div>`;
+    };
+    reader.readAsDataURL(f);
+  });
+  renderImgList();
+}
+function renderImgList(){
+  imgList.innerHTML='';
+  imgQueue.forEach((f,i)=>{
+    imgList.innerHTML+=`<div class="file-item">
+      <span class="fi-icon">🖼️</span>
+      <span class="fi-name">${f.name}</span>
+      <span class="fi-size">${fmtSize(f.size)}</span>
+      <button class="fi-remove" onclick="removeImg(${i})">✕</button>
+    </div>`;
+  });
+  imgUploadBtn.disabled=imgQueue.length===0;
+}
+function removeImg(i){
+  imgQueue.splice(i,1);
+  imgPreview.children[i]?.remove();
+  renderImgList();
+}
+
+imgUploadBtn.addEventListener('click',()=>{
+  const fd=new FormData();
+  imgQueue.forEach(f=>fd.append('images',f));
+  doUpload(fd,'img');
+});
+
+// ============================================
+//  CAMERA
+// ============================================
+let camStream=null, camPhotos=[];
+const camVideo=document.getElementById('camVideo');
+const camCanvas=document.getElementById('camCanvas');
+const camPlaceholder=document.getElementById('camPlaceholder');
+const camStart=document.getElementById('camStart');
+const camCapture=document.getElementById('camCapture');
+const camStop=document.getElementById('camStop');
+const camPreviewEl=document.getElementById('camPreview');
+const camUploadBtn=document.getElementById('camUploadBtn');
+
+camStart.addEventListener('click',async()=>{
+  try{
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    camVideo.srcObject=camStream;
+    camVideo.style.display='block';
+    camPlaceholder.style.display='none';
+    camStart.style.display='none';
+    camCapture.style.display='block';
+    camStop.style.display='block';
+    toast('Kamera aktif! 📸','info');
+  }catch(e){
+    toast('Gagal akses kamera: '+e.message,'error');
+  }
+});
+
+camCapture.addEventListener('click',()=>{
+  const flash=document.getElementById('flash');
+  flash.classList.add('active');
+  setTimeout(()=>flash.classList.remove('active'),150);
+
+  camCanvas.width=camVideo.videoWidth;
+  camCanvas.height=camVideo.videoHeight;
+  camCanvas.getContext('2d').drawImage(camVideo,0,0);
+  const dataUrl=camCanvas.toDataURL('image/png');
+  camPhotos.push(dataUrl);
+
+  camPreviewEl.innerHTML+=`<div class="preview-thumb">
+    <img src="${dataUrl}" alt="">
+    <button class="thumb-remove" onclick="this.parentElement.remove()">✕</button>
+  </div>`;
+  camUploadBtn.disabled=false;
+  toast('Foto diambil! 📷','success');
+});
+
+camStop.addEventListener('click',()=>{
+  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
+  camVideo.style.display='none';
+  camPlaceholder.style.display='block';
+  camStart.style.display='block';
+  camCapture.style.display='none';
+  camStop.style.display='none';
+});
+
+camUploadBtn.addEventListener('click',()=>{
+  const fd=new FormData();
+  camPhotos.forEach((d,i)=>{
+    const blob=dataURLtoBlob(d);
+    fd.append('photos',blob,`camera_${i}.png`);
+  });
+  doUpload(fd,'cam');
+});
+
+function dataURLtoBlob(url){
+  const parts=url.split(',');
+  const mime=parts[0].match(/:(.*?);/)[1];
+  const b=atob(parts[1]);
+  const arr=new Uint8Array(b.length);
+  for(let i=0;i<b.length;i++)arr[i]=b.charCodeAt(i);
+  return new Blob([arr],{type:mime});
+}
+
+// ============================================
+//  UPLOAD HANDLER
+// ============================================
+function doUpload(formData, type){
+  const url=CONFIG.uploadURL;
+  if(!url){
+    toast('⚠️ URL upload belum diatur! Edit CONFIG.uploadURL','error');
+    return;
+  }
+
+  const btnMap={file:fileUploadBtn,img:imgUploadBtn,cam:camUploadBtn};
+  const progMap={
+    file:{wrap:document.getElementById('fileProgress'),fill:document.getElementById('fileProgressFill'),text:document.getElementById('fileProgressText')},
+    img:{wrap:document.getElementById('imgProgress'),fill:document.getElementById('imgProgressFill'),text:document.getElementById('imgProgressText')},
+    cam:{wrap:document.getElementById('camProgress'),fill:document.getElementById('camProgressFill'),text:document.getElementById('camProgressText')},
+  };
+  const btn=btnMap[type];
+  const prog=progMap[type];
+
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span>Uploading...';
+  prog.wrap.style.display='block';
+
+  const xhr=new XMLHttpRequest();
+  xhr.open('POST',url);
+
+  xhr.upload.addEventListener('progress',e=>{
+    if(e.lengthComputable){
+      const pct=Math.round(e.loaded/e.total*100);
+      prog.fill.style.width=pct+'%';
+      prog.text.textContent=pct+'%';
+    }
+  });
+
+  xhr.addEventListener('load',()=>{
+    btn.innerHTML='✅ Upload Selesai!';
+    prog.fill.style.width='100%';
+    prog.text.textContent='100% — Selesai!';
+    toast('Upload berhasil! 🎉','success');
+    setTimeout(()=>{
+      btn.innerHTML='🚀 Upload';
+      btn.disabled=false;
+      prog.wrap.style.display='none';
+      prog.fill.style.width='0%';
+    },3000);
+  });
+
+  xhr.addEventListener('error',()=>{
+    btn.innerHTML='❌ Gagal';
+    toast('Upload gagal. Cek URL & koneksi.','error');
+    setTimeout(()=>{btn.innerHTML='🚀 Upload';btn.disabled=false;prog.wrap.style.display='none'},3000);
+  });
+
+  xhr.send(formData);
+}
+
+// ============================================
+//  URL DISPLAY
+// ============================================
+document.getElementById('urlDisplay').textContent = CONFIG.uploadURL || 'Belum diatur';
 </script>
-
 </body>
 </html>
